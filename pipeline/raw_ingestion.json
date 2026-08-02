@@ -31,7 +31,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "CDC",
+							"folder": {
+								"value": "@concat(pipeline().parameters.Table,'_' ,'cdc')",
+								"type": "Expression"
+							},
 							"file": "cdc.json"
 						}
 					}
@@ -65,7 +68,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "select count(*) as total_count from @{pipeline().parameters.Schema}.@{pipeline().parameters.Table}\nwhere @{pipeline().parameters.cdc_col} > '@{if(equals(pipeline().parameters.from_date, ''), formatDateTime(activity('watermark_column').output.firstRow.cdc, 'yyyy-MM-dd HH:mm:ss'), pipeline().parameters.from_date)}'",
+								"value": "select count(*) as total_count from @{pipeline().parameters.Schema}.@{pipeline().parameters.Table}\nwhere @{pipeline().parameters.cdc_col} > '@{if(empty(pipeline().parameters.from_date), formatDateTime(activity('watermark_column').output.firstRow.cdc, 'yyyy-MM-dd HH:mm:ss'), pipeline().parameters.from_date)}'",
 								"type": "Expression"
 							}
 						}
@@ -114,7 +117,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "select * @{pipeline().parameters.Schema}.@{pipeline().parameters.Table}\nwhere @{pipeline().parameters.cdc_col} > '@{if(equals(pipeline().parameters.from_date, ''), formatDateTime(activity('watermark_column').output.firstRow.cdc, 'yyyy-MM-dd HH:mm:ss'), pipeline().parameters.from_date)}'\n",
+										"value": "select * from @{pipeline().parameters.Schema}.@{pipeline().parameters.Table}\nwhere @{pipeline().parameters.cdc_col} > '@{if(empty(pipeline().parameters.from_date), formatDateTime(activity('watermark_column').output.firstRow.cdc, 'yyyy-MM-dd HH:mm:ss'), pipeline().parameters.from_date)}'\n",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -234,7 +237,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "CDC",
+										"folder": {
+											"value": "@concat(pipeline().parameters.Table,'_' ,'cdc')",
+											"type": "Expression"
+										},
 										"file": "empty.json"
 									}
 								}
@@ -245,7 +251,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "CDC",
+										"folder": {
+											"value": "@concat(pipeline().parameters.Table,'_' ,'cdc')",
+											"type": "Expression"
+										},
 										"file": "cdc.json"
 									}
 								}
@@ -302,7 +311,7 @@
 			},
 			"cdc_col": {
 				"type": "string",
-				"defaultValue": " updated_at"
+				"defaultValue": "updated_at"
 			},
 			"from_date": {
 				"type": "string"
