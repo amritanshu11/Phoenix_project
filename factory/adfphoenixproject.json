@@ -1,0 +1,15 @@
+{
+	"name": "adfphoenixproject",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "ukwest",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "36990650-d851-42a5-9d24-52fbd4553618",
+		"tenantId": "389ef062-2ab6-4e89-a139-71cf94b3f03a"
+	}
+}
